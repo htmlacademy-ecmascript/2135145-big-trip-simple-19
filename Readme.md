@@ -1,7 +1,7 @@
 # Проект «Большое путешествие (простой)»
 
 * Студент: [Irina Styazhkina](https://up.htmlacademy.ru/ecmascript/19/user/2135145).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Конотоп](https://htmlacademy.ru/profile/id2123489).
 
 ---
 
