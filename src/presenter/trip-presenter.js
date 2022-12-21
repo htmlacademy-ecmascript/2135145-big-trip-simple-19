@@ -11,11 +11,15 @@ export default class TripPresenter {
     this.contentContainer = contentContainer;
   }
 
-  init = () => {
+  init = (pointsModel, destinationsModel) => {
+    this.pointsModel = pointsModel;
+    this.destinationsModel = destinationsModel;
+    this.points = [...this.pointsModel.getPoints()];
+
     render(new SortersView(), this.contentContainer);
-    render(new EditFormView(), this.contentContainer);
-    for (let i = 0; i < 3; i += 1) {
-      render(new PointView(), this.pointListView.getElement());
+    render(new EditFormView(this.points[0], this.destinationsModel.getDestinations(), this.destinationsModel.getDestinationById(this.points[0].destination)), this.contentContainer);
+    for (let i = 0; i < this.points.length; i += 1) {
+      render(new PointView(this.points[i], this.destinationsModel.getDestinationById(this.points[i].destination)), this.pointListView.getElement());
     }
     render(this.pointListView, this.contentContainer);
   }
