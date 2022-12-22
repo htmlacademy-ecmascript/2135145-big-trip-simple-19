@@ -1,5 +1,6 @@
 import {render} from '../render.js';
 import EditFormView from '../view/edit-form-view.js';
+import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
 import SortersView from '../view/sorters-view.js';
@@ -12,20 +13,16 @@ export default class TripPresenter {
   #points = null;
 
 
-  constructor(contentContainer) {
+  constructor(contentContainer, pointsModel, destinationsModel) {
     this.#contentContainer = contentContainer;
-  }
-
-  init = (pointsModel, destinationsModel) => {
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
-    this.#points = [...this.#pointsModel.points];
+  }
 
+  init = () => {
+    this.#points = [...this.#pointsModel.points];
     render(new SortersView(), this.#contentContainer);
-    for (let i = 0; i < this.#points.length; i += 1) {
-      this.#renderPointItem(this.#points[i]);
-    }
-    render(this.#pointListView, this.#contentContainer);
+    this.#renderPointList();
   };
 
   #renderPointItem = (point) => {
@@ -65,5 +62,16 @@ export default class TripPresenter {
     });
 
     render(pointItemView, this.#pointListView.element);
+  };
+
+  #renderPointList = () => {
+    if (this.#points === null || this.#points.length === 0) {
+      render(new NoPointView(), this.#contentContainer);
+    } else {
+      for (let i = 0; i < this.#points.length; i += 1) {
+        this.#renderPointItem(this.#points[i]);
+      }
+      render(this.#pointListView, this.#contentContainer);
+    }
   };
 }
