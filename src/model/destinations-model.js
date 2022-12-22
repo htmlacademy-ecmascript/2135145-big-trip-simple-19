@@ -1,9 +1,11 @@
 import {getAllDestinations} from '../mock/destinations.js';
 
 export default class DestinationsModel {
-  destinations = getAllDestinations();
+  #destinations = getAllDestinations();
 
-  getDestinations = () => this.destinations;
+  get destinations(){
+    return this.#destinations;
+  }
 
-  getDestinationById = (id) => this.destinations.find((dest) => dest.id === id);
+  getDestinationById = (id) => this.#destinations.find((dest) => dest.id === id);
 }

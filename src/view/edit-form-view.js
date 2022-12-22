@@ -1,4 +1,4 @@
-import {getAllOffersForType, TYPES} from "../mock/offers";
+import {getAllOffersForType, TYPES} from '../mock/offers.js';
 import {createElement} from '../render.js';
 import {capitalizeFirstLetter, getDateWithTimeWithSlash} from '../utils/utils.js';
 
@@ -7,6 +7,14 @@ const createDestinationTemplate = ({name, description}) => (
     <h3 class="event__section-title  event__section-title--destination">${name}</h3>
     <p class="event__destination-description">${description}</p>
    </section>
+  `
+);
+
+const createEventTypeTemplate = (type) => (
+  `<div class="event__type-item">
+      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type}>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeFirstLetter(type)}</label>
+    </div>
   `
 );
 
@@ -50,14 +58,6 @@ const createTimeTemplate = (startDate, endDate) => (
      <label class="visually-hidden" for="event-end-time-1">To</label>
      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
    </div>
-  `
-);
-
-const createEventTypeTemplate = (type) => (
-  `<div class="event__type-item">
-      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeFirstLetter(type)}</label>
-    </div>
   `
 );
 
@@ -125,25 +125,30 @@ const createEditFormTemplate = (point, destinations, currentDestination) => {
 
 
 export default class EditFormView {
+  #element = null;
+  #point = null;
+  #destinations = null;
+  #currentDestination = null;
+
   constructor(point, destinations, currentDestination) {
-    this.point = point;
-    this.destinations = destinations;
-    this.currentDestination = currentDestination;
+    this.#point = point;
+    this.#destinations = destinations;
+    this.#currentDestination = currentDestination;
   }
 
-  getTemplate() {
-    return createEditFormTemplate(this.point, this.destinations, this.currentDestination);
+  get template() {
+    return createEditFormTemplate(this.#point, this.#destinations, this.#currentDestination);
   }
 
-  getElement() {
-    if(!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if(!this.#element) {
+      this.#element = createElement(this.template);
     }
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 
 }
