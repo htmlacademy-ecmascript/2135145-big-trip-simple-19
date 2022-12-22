@@ -2,7 +2,7 @@ import {render} from '../render.js';
 import EditFormView from '../view/edit-form-view.js';
 import PointListView from '../view/point-list-view.js';
 import PointView from '../view/point-view.js';
-import SortersView from "../view/sorters-view";
+import SortersView from '../view/sorters-view.js';
 
 export default class TripPresenter {
   #pointListView = new PointListView();
@@ -26,7 +26,7 @@ export default class TripPresenter {
       this.#renderPointItem(this.#points[i]);
     }
     render(this.#pointListView, this.#contentContainer);
-  }
+  };
 
   #renderPointItem = (point) => {
     const pointItemView = new PointView(point, this.#destinationsModel.getDestinationById(point.destination));
