@@ -1,5 +1,5 @@
-import {createElement} from '../render.js';
-import {getDateWithSeparator, getDateWithTime, getMonthAndDay, getTime} from '../utils/utils.js';
+import AbstractView from '../framework/view/abstract-view.js';
+import {capitalizeFirstLetter, getDateWithSeparator, getDateWithTime, getMonthAndDay, getTime} from '../utils/utils.js';
 
 const createOfferTemplate = (offer) => (
   `<li class="event__offer">
@@ -33,7 +33,7 @@ const createPriceTemplate = (price) => (
 );
 
 const createPointTemplate = (point, destination) => {
-  const {dateFrom, dateTo, basePrice} = point;
+  const {dateFrom, dateTo, basePrice, type } = point;
   const dayAndMonth = getMonthAndDay(dateFrom);
   const startTime = getTime(dateFrom);
   const endTime = getTime(dateTo);
@@ -48,9 +48,9 @@ const createPointTemplate = (point, destination) => {
     <div class="event">
       <time class="event__date" datetime=${dateWithSeparator}>${dayAndMonth}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">Flight ${name}</h3>
+      <h3 class="event__title">${capitalizeFirstLetter(type)} ${name}</h3>
       ${createEventsScheduleTemplate(startDate, startTime, endDate, endTime)}
       ${createPriceTemplate(basePrice)}
       <h4 class="visually-hidden">Offers:</h4>
@@ -64,28 +64,26 @@ const createPointTemplate = (point, destination) => {
   );
 };
 
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #point = null;
   #destination = null;
+  #handleEditClick = null;
 
-  constructor(point, destination) {
+  constructor({point, destination, onEditClick }) {
+    super();
     this.#point = point;
     this.#destination = destination;
+    this.#handleEditClick = onEditClick;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+
   }
 
   get template() {
     return createPointTemplate(this.#point, this.#destination);
   }
 
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleEditClick();
+  };
 }
