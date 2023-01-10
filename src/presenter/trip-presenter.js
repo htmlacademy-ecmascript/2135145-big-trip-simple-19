@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render, replace} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/point-list-view.js';
@@ -26,40 +26,44 @@ export default class TripPresenter {
   };
 
   #renderPointItem = (point) => {
-    const pointItemView = new PointView(point, this.#destinationsModel.getDestinationById(point.destination));
-    const editFormView = new EditFormView(point, this.#destinationsModel.destinations, this.#destinationsModel.getDestinationById(point.destination));
+    const pointItemView = new PointView({
+      point,
+      destination: this.#destinationsModel.getDestinationById(point.destination),
+      onEditClick: () => {
+        replacePointViewToForm();
+        document.addEventListener('keydown', onEscKeyDown);
+      }
+    });
 
-    const replacePointViewToForm = () => {
-      this.#pointListView.element.replaceChild(editFormView.element, pointItemView.element);
-    };
+    const editFormView = new EditFormView({
+      point,
+      destinations: this.#destinationsModel.destinations,
+      currentDestination: this.#destinationsModel.getDestinationById(point.destination),
+      onFormSubmit: () => {
+        replaceFormToPointView();
+        document.removeEventListener('keydown', onEscKeyDown);
+      },
+      onCloseClick: () => {
+        replaceFormToPointView();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    });
 
-    const replaceFormToPointView = () => {
-      this.#pointListView.element.replaceChild(pointItemView.element, editFormView.element);
-    };
+    function replacePointViewToForm(){
+      replace(editFormView, pointItemView);
+    }
 
-    const onEscKeyDown = (evt) => {
+    function replaceFormToPointView(){
+      replace(pointItemView, editFormView);
+    }
+
+    function onEscKeyDown(evt){
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
         replaceFormToPointView();
         document.removeEventListener('keydown', onEscKeyDown);
       }
-    };
-
-    pointItemView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replacePointViewToForm();
-      document.addEventListener('keydown', onEscKeyDown);
-    });
-
-    editFormView.element.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      replaceFormToPointView();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
-
-    editFormView.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
-      replaceFormToPointView();
-      document.removeEventListener('keydown', onEscKeyDown);
-    });
+    }
 
     render(pointItemView, this.#pointListView.element);
   };

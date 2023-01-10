@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createSortersTemplate = () => (
   `
@@ -31,21 +31,8 @@ const createSortersTemplate = () => (
   `
 );
 
-export default class SortersView {
-  #element = null;
-
+export default class SortersView extends AbstractView {
   get template() {
     return createSortersTemplate();
-  }
-
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

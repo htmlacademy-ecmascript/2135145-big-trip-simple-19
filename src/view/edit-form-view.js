@@ -1,6 +1,18 @@
+import dayjs from 'dayjs';
+import AbstractView from '../framework/view/abstract-view.js';
+import {getAllDestinations} from '../mock/destinations.js';
 import {getAllOffersForType, TYPES} from '../mock/offers.js';
-import {createElement} from '../render.js';
-import {capitalizeFirstLetter, getDateWithTimeWithSlash} from '../utils/utils.js';
+import {capitalizeFirstLetter, getDateWithTimeWithSlash, getRandomFromRange} from '../utils/utils.js';
+
+const BLANK_POINT = {
+  'basePrice': 0,
+  'dateFrom': dayjs(),
+  'dateTo': dayjs(),
+  'destination': getAllDestinations()[0],
+  'id': getRandomFromRange(1, 50),
+  'offers': [],
+  'type': TYPES[0],
+};
 
 const createDestinationTemplate = ({name, description}) => (
   `<section class="event__section  event__section--destination">
@@ -124,31 +136,35 @@ const createEditFormTemplate = (point, destinations, currentDestination) => {
 };
 
 
-export default class EditFormView {
-  #element = null;
+export default class EditFormView extends AbstractView {
   #point = null;
   #destinations = null;
   #currentDestination = null;
+  #handleFormSubmit = null;
+  #handleCloseClick = null;
 
-  constructor(point, destinations, currentDestination) {
+  constructor({point = BLANK_POINT, destinations, currentDestination, onFormSubmit, onCloseClick}) {
+    super();
     this.#point = point;
     this.#destinations = destinations;
     this.#currentDestination = currentDestination;
+    this.#handleFormSubmit = onFormSubmit;
+    this.#handleCloseClick = onCloseClick;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeButtonClickHandler);
   }
 
   get template() {
     return createEditFormTemplate(this.#point, this.#destinations, this.#currentDestination);
   }
 
-  get element() {
-    if(!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleFormSubmit();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
-
+  #closeButtonClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleCloseClick();
+  };
 }
