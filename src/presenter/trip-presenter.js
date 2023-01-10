@@ -47,23 +47,23 @@ export default class TripPresenter {
         replaceFormToPointView();
         document.removeEventListener('keydown', onEscKeyDown);
       }
-  });
+    });
 
-    const replacePointViewToForm = () => {
+    function replacePointViewToForm(){
       replace(editFormView, pointItemView);
-    };
+    }
 
-    const replaceFormToPointView = () => {
+    function replaceFormToPointView(){
       replace(pointItemView, editFormView);
-    };
+    }
 
-    const onEscKeyDown = (evt) => {
+    function onEscKeyDown(evt){
       if (evt.key === 'Escape' || evt.key === 'Esc') {
         evt.preventDefault();
         replaceFormToPointView();
         document.removeEventListener('keydown', onEscKeyDown);
       }
-    };
+    }
 
     render(pointItemView, this.#pointListView.element);
   };
