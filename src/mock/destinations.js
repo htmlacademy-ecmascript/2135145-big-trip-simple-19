@@ -1,4 +1,4 @@
-import {getRandomFromArray, getRandomFromRange} from '../utils/utils.js';
+import {getRandomFromArray, getRandomFromRange} from '../utils/common.js';
 
 const CITIES = [
   'London',

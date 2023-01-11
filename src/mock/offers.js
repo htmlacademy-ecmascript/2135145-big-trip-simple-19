@@ -1,4 +1,4 @@
-import {getRandomFromArray, getRandomFromRange} from '../utils/utils.js';
+import {getRandomFromArray, getRandomFromRange} from '../utils/common.js';
 
 export const TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 

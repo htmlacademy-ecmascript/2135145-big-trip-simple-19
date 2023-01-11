@@ -1,5 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import {capitalizeFirstLetter, getDateWithSeparator, getDateWithTime, getMonthAndDay, getTime} from '../utils/utils.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
+import { getDateWithSeparator, getDateWithTime, getMonthAndDay, getTime} from '../utils/time-formatter.js';
+
 
 const createOfferTemplate = (offer) => (
   `<li class="event__offer">

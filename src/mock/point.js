@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {getRandomFromArray, getRandomFromRange} from '../utils/utils.js';
+import {getRandomFromArray, getRandomFromRange} from '../utils/common.js';
+
 import {getRandomDestination} from './destinations.js';
 import {getRandomOffersForType, TYPES} from './offers.js';
 

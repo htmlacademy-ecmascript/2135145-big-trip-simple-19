@@ -2,7 +2,8 @@ import dayjs from 'dayjs';
 import AbstractView from '../framework/view/abstract-view.js';
 import {getAllDestinations} from '../mock/destinations.js';
 import {getAllOffersForType, TYPES} from '../mock/offers.js';
-import {capitalizeFirstLetter, getDateWithTimeWithSlash, getRandomFromRange} from '../utils/utils.js';
+import {capitalizeFirstLetter, getRandomFromRange} from '../utils/common.js';
+import {getDateWithTimeWithSlash} from '../utils/time-formatter.js';
 
 const BLANK_POINT = {
   'basePrice': 0,
