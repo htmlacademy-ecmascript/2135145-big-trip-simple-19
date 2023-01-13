@@ -71,7 +71,7 @@ export default class PointPresenter {
     if(this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToPointView();
     }
-  }
+  };
 
   #replacePointViewToForm(){
     replace(this.#editFormViewComponent, this.#pointItemViewComponent);
@@ -90,5 +90,5 @@ export default class PointPresenter {
       this.#replaceFormToPointView();
       document.removeEventListener('keydown', this.#onEscKeyDown);
     }
-  }
+  };
 }

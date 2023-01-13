@@ -26,7 +26,7 @@ export default class TripPresenter {
 
   #handleModeChange = () => {
     this.#pointPresenters.forEach((p) => p.resetView());
-}
+  };
 
   #renderPointItem = (point) => {
     const pointPresenter = new PointPresenter({
@@ -51,7 +51,7 @@ export default class TripPresenter {
 
   #renderNoPointView = () => {
     render(new NoPointView(), this.#contentContainer);
-  }
+  };
 
   #renderBoard = () => {
     this.#renderSort();
@@ -60,5 +60,5 @@ export default class TripPresenter {
     } else {
       this.#renderPointList();
     }
-  }
+  };
 }
