@@ -1,0 +1,94 @@
+import {remove, render, replace} from '../framework/render.js';
+import EditFormView from '../view/edit-form-view.js';
+import PointView from '../view/point-view.js';
+
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export default class PointPresenter {
+  #pointListContainer = null;
+  #pointItemViewComponent = null;
+  #editFormViewComponent = null;
+  #destinationsModel = null;
+  #point = null;
+  #handleModeChange = null;
+  #mode = Mode.DEFAULT;
+
+  constructor({ pointListContainer, destinationsModel, onModeChange}) {
+    this.#pointListContainer = pointListContainer;
+    this.#destinationsModel = destinationsModel;
+    this.#handleModeChange = onModeChange;
+  }
+
+  init(point) {
+    this.#point = point;
+    const prevPointItemViewComponent = this.#pointItemViewComponent;
+    const prevEditFormViewComponent = this.#editFormViewComponent;
+
+    this.#pointItemViewComponent = new PointView({
+      point: this.#point,
+      destination: this.#destinationsModel.getDestinationById(this.#point.destination),
+      onEditClick: () => {
+        this.#replacePointViewToForm();
+        document.addEventListener('keydown', this.#onEscKeyDown);
+      }
+    });
+
+    this.#editFormViewComponent = new EditFormView({
+      point: this.#point,
+      destinations: this.#destinationsModel.destinations,
+      currentDestination: this.#destinationsModel.getDestinationById(this.#point.destination),
+      onFormSubmit: () => {
+        this.#replaceFormToPointView();
+        document.removeEventListener('keydown', this.#onEscKeyDown);
+      },
+      onCloseClick: () => {
+        this.#replaceFormToPointView();
+        document.removeEventListener('keydown', this.#onEscKeyDown);
+      }
+    });
+
+    if(prevPointItemViewComponent === null || prevEditFormViewComponent === null) {
+      render(this.#pointItemViewComponent, this.#pointListContainer);
+      return;
+    }
+
+    if(this.#mode === Mode.DEFAULT) {
+      replace(this.#pointItemViewComponent, prevPointItemViewComponent);
+    }
+
+    if(this.#mode === Mode.EDITING) {
+      replace(this.#editFormViewComponent, prevEditFormViewComponent);
+    }
+
+    remove(prevPointItemViewComponent);
+    remove(prevEditFormViewComponent);
+  }
+
+  resetView = () => {
+    if(this.#mode !== Mode.DEFAULT) {
+      this.#replaceFormToPointView();
+    }
+  }
+
+  #replacePointViewToForm(){
+    replace(this.#editFormViewComponent, this.#pointItemViewComponent);
+    this.#handleModeChange();
+    this.#mode = Mode.EDITING;
+  }
+
+  #replaceFormToPointView(){
+    replace(this.#pointItemViewComponent, this.#editFormViewComponent);
+    this.#mode = Mode.DEFAULT;
+  }
+
+  #onEscKeyDown = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#replaceFormToPointView();
+      document.removeEventListener('keydown', this.#onEscKeyDown);
+    }
+  }
+}
