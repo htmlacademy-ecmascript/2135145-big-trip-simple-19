@@ -11,5 +11,4 @@ const sortByPrice = (pointA, pointB) => {
 
 const sortByDate = (pointA, pointB) => dayjs(pointB.dateFrom).diff(pointA.dateFrom);
 
-
 export {sortByDate, sortByPrice};
