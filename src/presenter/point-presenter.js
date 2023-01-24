@@ -76,7 +76,7 @@ export default class PointPresenter {
   destroy = () => {
     remove(this.#pointItemViewComponent);
     remove(this.#editFormViewComponent);
-  }
+  };
 
   #replacePointViewToForm(){
     replace(this.#editFormViewComponent, this.#pointItemViewComponent);

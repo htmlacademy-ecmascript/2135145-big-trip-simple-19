@@ -1,14 +1,16 @@
-import dayjs from "dayjs";
+import dayjs from 'dayjs';
 
 const sortByPrice = (pointA, pointB) => {
-
-  return pointB.basePrice > pointA.basePrice ? 1
-    : pointA.basePrice > pointB.basePrice  ? -1
-    : 0;
-}
+  if(pointB.basePrice > pointA.basePrice) {
+    return 1
+  } else if(pointA.basePrice > pointB.basePrice){
+    return -1;
+  }
+  return 0;
+};
 
 const sortByDate = (pointA, pointB) => {
   return dayjs(pointB.dateFrom).diff(pointA.dateFrom);
-}
+};
 
 export {sortByDate, sortByPrice};

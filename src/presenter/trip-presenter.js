@@ -56,7 +56,7 @@ export default class TripPresenter {
     this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderPointList();
-  }
+  };
 
   #sortPoints = (sortType) => {
     switch (sortType) {
@@ -72,7 +72,7 @@ export default class TripPresenter {
         this.#currentSortType = sortType.DAY;
         this.#points = [...this.#sourcedPoints];
     }
-  }
+  };
 
   #renderPointList = () => {
     for (let i = 0; i < this.#points.length; i += 1) {
@@ -84,7 +84,7 @@ export default class TripPresenter {
   #clearPointList = () => {
     this.#pointPresenters.forEach((presenter) => presenter.destroy());
     this.#pointPresenters.clear();
-  }
+  };
 
   #renderNoPointView = () => {
     render(new NoPointView(), this.#contentContainer);
