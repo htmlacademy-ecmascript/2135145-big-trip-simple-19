@@ -9,12 +9,17 @@ const generateDate = () => {
   return dayjs().add(gap, 'hour').toDate();
 };
 
+const generateDateWithDayGap = () => {
+  const gap = getRandomFromRange(0, 3);
+  return dayjs().add(gap, 'day').toDate();
+};
+
 export const generatePoint = () => {
   const type = getRandomFromArray(TYPES);
   return (
     {
       'basePrice': getRandomFromRange(100, 3000),
-      'dateFrom': dayjs(),
+      'dateFrom': generateDateWithDayGap(),
       'dateTo': generateDate(),
       'destination': getRandomDestination().id,
       'id': getRandomFromRange(1, 50),
