@@ -172,23 +172,24 @@ export default class EditFormView extends AbstractStatefulView {
     this.updateElement(
       EditFormView.parseDataToState({point, destinations: this._state.destinations, getDestinationById: this.#getDestinationById}),
     );
-  }
+  };
 
   get template() {
     return createEditFormTemplate({state: this._state});
   }
 
   static parseDataToState = ({point, destinations, getDestinationById}) => {
-    return {
+    const data = {
       point: {...point, destination: getDestinationById(point.destination)},
       destinations: [...destinations],
-    }
-  }
+    };
+    return data;
+  };
 
   static parseStateToData = ({state}) => {
     const point = {...state.point, destination: state.point.destination.id};
     return point;
-  }
+  };
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
@@ -206,12 +207,12 @@ export default class EditFormView extends AbstractStatefulView {
     if(evt.target.classList.contains('event__type-label')) {
       this.updateElement({...this._state, point: {...this._state.point, type: evt.target.control.value}})
     }
-  }
+  };
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
-      this._setState({...this._state, point: {...this._state.point, destination: {...this._state.point.destination, name: evt.target.value}} })
-  }
+    this._setState({...this._state, point: {...this._state.point, destination: {...this._state.point.destination, name: evt.target.value}} })
+  };
 
   #destinationInputBlurHandler = (evt) => {
     evt.preventDefault();
@@ -222,5 +223,5 @@ export default class EditFormView extends AbstractStatefulView {
       const dest = this.#getDestinationById(this._state.point.destination.id);
       this.updateElement({...this._state, point: {...this._state.point, destination: dest} })
     }
-  }
+  };
 }

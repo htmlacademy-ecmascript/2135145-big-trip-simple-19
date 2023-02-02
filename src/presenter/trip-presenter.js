@@ -1,6 +1,6 @@
 import {SortType} from '../const.js';
 import {render} from '../framework/render.js';
-import {updateItem} from "../utils/common";
+import {updateItem} from '../utils/common.js';
 import {sortByPrice, sortByDate} from '../utils/point.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/point-list-view.js';

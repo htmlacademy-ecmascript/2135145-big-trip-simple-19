@@ -69,7 +69,7 @@ export default class PointPresenter {
 
     remove(prevPointItemViewComponent);
     remove(prevEditFormViewComponent);
-  }
+  };
 
   resetView = () => {
     if(this.#mode !== Mode.DEFAULT) {
