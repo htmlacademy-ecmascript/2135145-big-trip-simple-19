@@ -14,15 +14,17 @@ export default class PointPresenter {
   #destinationsModel = null;
   #point = null;
   #handleModeChange = null;
+  #handleDataChange = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ pointListContainer, destinationsModel, onModeChange}) {
+  constructor({ pointListContainer, destinationsModel, onModeChange, onDataChange}) {
     this.#pointListContainer = pointListContainer;
     this.#destinationsModel = destinationsModel;
     this.#handleModeChange = onModeChange;
+    this.#handleDataChange = onDataChange;
   }
 
-  init(point) {
+  init = (point) => {
     this.#point = point;
     const prevPointItemViewComponent = this.#pointItemViewComponent;
     const prevEditFormViewComponent = this.#editFormViewComponent;
@@ -39,8 +41,10 @@ export default class PointPresenter {
     this.#editFormViewComponent = new EditFormView({
       point: this.#point,
       destinations: this.#destinationsModel.destinations,
-      currentDestination: this.#destinationsModel.getDestinationById(this.#point.destination),
-      onFormSubmit: () => {
+      getDestinationById: this.#destinationsModel.getDestinationById,
+      getDestinationByName: this.#destinationsModel.getDestinationByName,
+      onFormSubmit: ({data}) => {
+        this.#handleDataChange(data);
         this.#replaceFormToPointView();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       },
@@ -69,6 +73,7 @@ export default class PointPresenter {
 
   resetView = () => {
     if(this.#mode !== Mode.DEFAULT) {
+      this.#editFormViewComponent.reset(this.#point);
       this.#replaceFormToPointView();
     }
   };
@@ -92,6 +97,7 @@ export default class PointPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this.#editFormViewComponent.reset(this.#point);
       this.#replaceFormToPointView();
       document.removeEventListener('keydown', this.#onEscKeyDown);
     }

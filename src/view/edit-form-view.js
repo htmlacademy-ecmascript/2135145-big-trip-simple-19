@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import {getAllDestinations} from '../mock/destinations.js';
 import {getAllOffersForType, TYPES} from '../mock/offers.js';
 import {capitalizeFirstLetter, getRandomFromRange} from '../utils/common.js';
@@ -9,18 +9,24 @@ const BLANK_POINT = {
   'basePrice': 0,
   'dateFrom': dayjs(),
   'dateTo': dayjs(),
-  'destination': getAllDestinations()[0],
+  'destination': getAllDestinations()[0].id,
   'id': getRandomFromRange(1, 50),
   'offers': [],
   'type': TYPES[0],
 };
 
-const createDestinationTemplate = ({name, description}) => (
+const createPictureTemplate = ({src, description}) => (`<img class="event__photo" src=${src} alt=${description}>`);
+
+const createDestinationTemplate = ({name, description, pictures}) => (
   `<section class="event__section  event__section--destination">
     <h3 class="event__section-title  event__section-title--destination">${name}</h3>
-    <p class="event__destination-description">${description}</p>
-   </section>
-  `
+    ${description ? (`<p class="event__destination-description">${description}</p>`) : ''}
+    <div class="event__photos-container">
+        <div class="event__photos-tape">
+            ${pictures?.length > 0 ? pictures.map((picture) => createPictureTemplate(picture)).join('') : ''}
+        </div>
+      </div>
+   </section>`
 );
 
 const createEventTypeTemplate = (type) => (
@@ -48,7 +54,7 @@ const createEventTypesTemplate = (currentType) => (
   </div>`
 );
 
-const createDestinationOptionTemplate = (destination) => `<option value=${destination.name}></option>`;
+const createDestinationOptionTemplate = (destination) => `<option value="${destination.name}">`;
 
 const createDestinationsTemplate = (type, currentDestination, destinations) => (
   `<div class="event__field-group  event__field-group--destination">
@@ -57,7 +63,7 @@ const createDestinationsTemplate = (type, currentDestination, destinations) => (
     </label>
     <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value=${currentDestination.name} list="destination-list-1">
     <datalist id="destination-list-1">
-        ${destinations.map((destination) => createDestinationOptionTemplate(destination))}
+      ${destinations.map((destination) => createDestinationOptionTemplate(destination)).join('')}
     </datalist>
   </div>`
 );
@@ -106,16 +112,17 @@ const createOffersTemplate = (type, selectedOffers) => (
   `
 );
 
-const createEditFormTemplate = (point, destinations, currentDestination) => {
-  const {type, dateFrom, dateTo, basePrice, offers} = point;
+const createEditFormTemplate = ({state}) => {
+  const {type, dateFrom, destination, dateTo, basePrice, offers} = state.point;
+  const destinations = state.destinations;
   const startDate = getDateWithTimeWithSlash(dateFrom);
   const endDate = getDateWithTimeWithSlash(dateTo);
   return (
     `
-   <form class="event event--edit" action="#" method="post">
+   <form class="event event--edit">
     <header class="event__header">
       ${createEventTypesTemplate(type)}
-      ${createDestinationsTemplate(type, currentDestination, destinations)}
+      ${createDestinationsTemplate(type, destination, destinations)}
       ${createTimeTemplate(startDate, endDate)}
       ${createPriceTemplate(basePrice)}
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -129,7 +136,7 @@ const createEditFormTemplate = (point, destinations, currentDestination) => {
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         ${createOffersTemplate(type, offers)}
       </section>
-      ${createDestinationTemplate(currentDestination)}
+      ${createDestinationTemplate(destination)}
     </section>
   </form>
   `
@@ -137,35 +144,83 @@ const createEditFormTemplate = (point, destinations, currentDestination) => {
 };
 
 
-export default class EditFormView extends AbstractView {
-  #point = null;
-  #destinations = null;
-  #currentDestination = null;
+export default class EditFormView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleCloseClick = null;
+  #getDestinationById = null;
+  #getDestinationByName = null;
 
-  constructor({point = BLANK_POINT, destinations, currentDestination, onFormSubmit, onCloseClick}) {
+  constructor({point = BLANK_POINT, destinations, getDestinationById, getDestinationByName, onFormSubmit, onCloseClick}) {
     super();
-    this.#point = point;
-    this.#destinations = destinations;
-    this.#currentDestination = currentDestination;
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
+    this.#getDestinationById = getDestinationById;
+    this.#getDestinationByName = getDestinationByName;
+    this._setState(EditFormView.parseDataToState({point, destinations, getDestinationById}));
+    this._restoreHandlers();
+  }
+
+  _restoreHandlers() {
     this.element.addEventListener('submit', this.#formSubmitHandler);
     this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeButtonClickHandler);
+    this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
+    this.element.querySelector('.event__input--destination').addEventListener('blur', this.#destinationInputBlurHandler);
+  }
+
+  reset = (point) => {
+    this.updateElement(
+      EditFormView.parseDataToState({point, destinations: this._state.destinations, getDestinationById: this.#getDestinationById}),
+    );
   }
 
   get template() {
-    return createEditFormTemplate(this.#point, this.#destinations, this.#currentDestination);
+    return createEditFormTemplate({state: this._state});
+  }
+
+  static parseDataToState = ({point, destinations, getDestinationById}) => {
+    return {
+      point: {...point, destination: getDestinationById(point.destination)},
+      destinations: [...destinations],
+    }
+  }
+
+  static parseStateToData = ({state}) => {
+    const point = {...state.point, destination: state.point.destination.id};
+    return point;
   }
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this.#handleFormSubmit();
+    this.#handleFormSubmit({data: EditFormView.parseStateToData({state: this._state})});
+    this._restoreHandlers();
   };
 
   #closeButtonClickHandler = (evt) => {
     evt.preventDefault();
     this.#handleCloseClick();
   };
+
+  #pointTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    if(evt.target.classList.contains('event__type-label')) {
+      this.updateElement({...this._state, point: {...this._state.point, type: evt.target.control.value}})
+    }
+  }
+
+  #destinationChangeHandler = (evt) => {
+    evt.preventDefault();
+      this._setState({...this._state, point: {...this._state.point, destination: {...this._state.point.destination, name: evt.target.value}} })
+  }
+
+  #destinationInputBlurHandler = (evt) => {
+    evt.preventDefault();
+    const destination = this.#getDestinationByName(evt.target.value);
+    if (destination) {
+      this.updateElement(({...this._state, point: {...this._state.point, destination: destination }}));
+    } else {
+      const dest = this.#getDestinationById(this._state.point.destination.id);
+      this.updateElement({...this._state, point: {...this._state.point, destination: dest} })
+    }
+  }
 }
