@@ -1,5 +1,6 @@
 import {SortType} from '../const.js';
 import {render} from '../framework/render.js';
+import {updateItem} from '../utils/common.js';
 import {sortByPrice, sortByDate} from '../utils/point.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/point-list-view.js';
@@ -38,7 +39,8 @@ export default class TripPresenter {
     const pointPresenter = new PointPresenter({
       pointListContainer: this.#pointListView.element,
       destinationsModel: this.#destinationsModel,
-      onModeChange: this.#handleModeChange
+      onDataChange: this.#handlePointChange,
+      onModeChange: this.#handleModeChange,
     });
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
@@ -56,6 +58,12 @@ export default class TripPresenter {
     this.#sortPoints(sortType);
     this.#clearPointList();
     this.#renderPointList();
+  };
+
+  #handlePointChange = (updatedPoint) => {
+    this.#points = updateItem(this.#points, updatedPoint);
+    this.#sourcedPoints = updateItem(this.#sourcedPoints, updatedPoint);
+    this.#pointPresenters.get(updatedPoint.id).init(updatedPoint);
   };
 
   #sortPoints = (sortType) => {

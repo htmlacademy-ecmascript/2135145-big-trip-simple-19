@@ -11,4 +11,6 @@ const getRandomFromArray = (array) => {
 
 const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + string.slice(1);
 
-export {getRandomFromArray, getRandomFromRange, capitalizeFirstLetter};
+const updateItem = (items, update) => items.map((item) => item.id === update.id ? update : item);
+
+export {getRandomFromArray, getRandomFromRange, capitalizeFirstLetter, updateItem};
