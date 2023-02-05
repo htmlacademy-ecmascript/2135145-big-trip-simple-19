@@ -11,12 +11,8 @@ const sortByPrice = (pointA, pointB) => {
 
 const sortByDate = (pointA, pointB) => dayjs(pointB.dateFrom).diff(pointA.dateFrom);
 
-const isDatesEqual = (dateA, dateB) => {
-  return (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D')
-};
+const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
-const isPriceEqual = (priceA, priceB) => {
-  return (priceA === null && priceB === null) || priceA === priceB;
-}
+const isPriceEqual = (priceA, priceB) => (priceA === null && priceB === null) || priceA === priceB;
 
 export {sortByDate, sortByPrice, isDatesEqual, isPriceEqual};

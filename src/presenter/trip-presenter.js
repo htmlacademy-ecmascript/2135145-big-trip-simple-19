@@ -1,11 +1,11 @@
 import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import {remove, render} from '../framework/render.js';
-import {filter} from "../utils/filter";
+import {filter} from '../utils/filter.js';
 import {sortByPrice, sortByDate} from '../utils/point.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/point-list-view.js';
 import SortersView from '../view/sorters-view.js';
-import NewPointPresenter from "./new-point-presenter";
+import NewPointPresenter from './new-point-presenter.js';
 import PointPresenter from './point-presenter.js';
 
 export default class TripPresenter {
@@ -126,10 +126,10 @@ export default class TripPresenter {
         this.#renderBoard();
         break;
     }
-  }
+  };
 
   #renderPointList = () => {
-    this.points.forEach(point => this.#renderPointItem(point));
+    this.points.forEach((point) => this.#renderPointItem(point));
     render(this.#pointListView, this.#contentContainer);
   };
 
@@ -157,7 +157,7 @@ export default class TripPresenter {
     if (resetSortType) {
       this.#currentSortType = SortType.DAY;
     }
-  }
+  };
 
   #renderBoard = () => {
     this.#renderSort();

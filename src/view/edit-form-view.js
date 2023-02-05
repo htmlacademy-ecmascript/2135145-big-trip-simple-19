@@ -128,7 +128,7 @@ const createEditFormTemplate = ({state, handleCloseClick}) => {
       ${createTimeTemplate(startDate, endDate)}
       ${createPriceTemplate(basePrice)}
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">${handleCloseClick ? "Delete" : "Close"}</button>
+      <button class="event__reset-btn" type="reset">${handleCloseClick ? 'Delete' : 'Close'}</button>
       ${handleCloseClick ?
       `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>

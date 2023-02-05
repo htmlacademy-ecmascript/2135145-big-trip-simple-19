@@ -35,7 +35,7 @@ export default class NewPointPresenter {
 
     render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
     document.addEventListener('keydown', this.#escKeyDownHandler);
-  }
+  };
 
   destroy() {
     if (this.#pointEditComponent === null) {
@@ -67,5 +67,5 @@ export default class NewPointPresenter {
       evt.preventDefault();
       this.destroy();
     }
-  }
+  };
 }

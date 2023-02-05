@@ -1,4 +1,4 @@
-import {UpdateType, UserAction} from "../const";
+import {UpdateType, UserAction} from '../const.js';
 import {remove, render, replace} from '../framework/render.js';
 import {isDatesEqual, isPriceEqual} from '../utils/point.js';
 import EditFormView from '../view/edit-form-view.js';
@@ -52,8 +52,8 @@ export default class PointPresenter {
         this.#replaceFormToPointView();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       },
-      onDeleteClick: (point) => {
-        this.#handleDeleteClick(point);
+      onDeleteClick: (data) => {
+        this.#handleDeleteClick(data);
         document.removeEventListener('keydown', this.#onEscKeyDown);
       }
     });
@@ -86,7 +86,7 @@ export default class PointPresenter {
     );
     this.#replaceFormToPointView();
     document.removeEventListener('keydown', this.#onEscKeyDown);
-  }
+  };
 
   #handleDeleteClick = (point) => {
     this.#handleDataChange(
