@@ -2,8 +2,8 @@ import {FilterType} from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const NoPointText = {
-  [FilterType.EVERYTHING]: "Click New Event to create your first point",
-  [FilterType.FUTURE]: "There are no future events now",
+  [FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [FilterType.FUTURE]: 'There are no future events now',
 };
 
 

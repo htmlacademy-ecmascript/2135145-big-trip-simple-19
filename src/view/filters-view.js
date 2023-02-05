@@ -2,7 +2,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 
 const createFilterTemplate = (filter, currentFilter) => (
-    `
+  `
   <div class="trip-filters__filter">
       <input
       id="filter-${filter}"
@@ -10,7 +10,7 @@ const createFilterTemplate = (filter, currentFilter) => (
       type="radio"
       name="trip-filter"
       value="${filter}"
-      ${filter === currentFilter ? "checked": ""}
+      ${filter === currentFilter ? 'checked' : ''}
       >
         <label class="trip-filters__filter-label" for="filter-${filter}" data-filter-type="${filter}">${capitalizeFirstLetter(filter)}</label>
     </div>

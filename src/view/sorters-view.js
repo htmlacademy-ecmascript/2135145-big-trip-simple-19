@@ -10,8 +10,8 @@ const createSorterItemTemplate = (sortItem, currentSortType) => (
       class="trip-sort__input  visually-hidden"
       type="radio" name="trip-sort"
       value="sort-${sortItem}"
-       ${sortItem === currentSortType ? "checked": ""}
-       ${sortItem !== sortType.PRICE && sortItem !== sortType.DAY ? "disabled": ""}>
+       ${sortItem === currentSortType ? 'checked' : ''}
+       ${sortItem !== sortType.PRICE && sortItem !== sortType.DAY ? 'disabled' : ''}>
       <label class="trip-sort__btn" for="sort-${sortItem}" data-sort-type="${sortItem}">${capitalizeFirstLetter(sortItem)}</label>
     </div>
   `

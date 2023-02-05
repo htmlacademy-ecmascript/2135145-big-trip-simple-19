@@ -145,7 +145,7 @@ export default class TripPresenter {
     render(this.#noPointsComponent, this.#contentContainer);
   };
 
-  #clearBoard = ({resetSortType= false}) => {
+  #clearBoard = ({resetSortType = false}) => {
     this.#newPointPresenter.destroy();
     this.#clearPointList();
 
