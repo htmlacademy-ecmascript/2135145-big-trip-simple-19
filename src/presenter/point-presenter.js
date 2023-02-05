@@ -1,4 +1,6 @@
+import {UpdateType, UserAction} from "../const";
 import {remove, render, replace} from '../framework/render.js';
+import {isDatesEqual, isPriceEqual} from '../utils/point.js';
 import EditFormView from '../view/edit-form-view.js';
 import PointView from '../view/point-view.js';
 
@@ -44,12 +46,14 @@ export default class PointPresenter {
       getDestinationById: this.#destinationsModel.getDestinationById,
       getDestinationByName: this.#destinationsModel.getDestinationByName,
       onFormSubmit: ({data}) => {
-        this.#handleDataChange(data);
-        this.#replaceFormToPointView();
-        document.removeEventListener('keydown', this.#onEscKeyDown);
+        this.#handleFormSubmit(data);
       },
       onCloseClick: () => {
         this.#replaceFormToPointView();
+        document.removeEventListener('keydown', this.#onEscKeyDown);
+      },
+      onDeleteClick: (point) => {
+        this.#handleDeleteClick(point);
         document.removeEventListener('keydown', this.#onEscKeyDown);
       }
     });
@@ -69,6 +73,27 @@ export default class PointPresenter {
 
     remove(prevPointItemViewComponent);
     remove(prevEditFormViewComponent);
+  };
+
+  #handleFormSubmit = (point) => {
+
+    const isPatchUpdate = isDatesEqual(this.#point.dateFrom, point.dateFrom) && isPriceEqual(this.#point.basePrice, point.basePrice);
+
+    this.#handleDataChange(
+      UserAction.UPDATE_POINT,
+      isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
+      point
+    );
+    this.#replaceFormToPointView();
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+  }
+
+  #handleDeleteClick = (point) => {
+    this.#handleDataChange(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
   };
 
   resetView = () => {
