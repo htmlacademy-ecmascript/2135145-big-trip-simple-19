@@ -2,17 +2,17 @@ import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import {getAllDestinations} from '../mock/destinations.js';
 import {getAllOffersForType, TYPES} from '../mock/offers.js';
-import {capitalizeFirstLetter, getRandomFromRange} from '../utils/common.js';
+import {capitalizeFirstLetter} from '../utils/common.js';
 import {getDateWithTimeWithSlash} from '../utils/time-formatter.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
 const BLANK_POINT = {
   'basePrice': 0,
-  'dateFrom': dayjs(),
-  'dateTo': dayjs(),
+  'dateFrom': dayjs().toDate(),
+  'dateTo': dayjs().toDate(),
   'destination': getAllDestinations()[0].id,
-  'id': getRandomFromRange(1, 50),
+  'id': null,
   'offers': [],
   'type': TYPES[0],
 };
@@ -89,7 +89,7 @@ const createPriceTemplate = (price) => (
       <span class="visually-hidden">Price</span>
       &euro;
     </label>
-    <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
   </div>
   `
 );
@@ -114,7 +114,7 @@ const createOffersTemplate = (type, selectedOffers) => (
   `
 );
 
-const createEditFormTemplate = ({state}) => {
+const createEditFormTemplate = ({state, handleCloseClick}) => {
   const {type, dateFrom, destination, dateTo, basePrice, offers} = state.point;
   const destinations = state.destinations;
   const startDate = getDateWithTimeWithSlash(dateFrom);
@@ -128,10 +128,12 @@ const createEditFormTemplate = ({state}) => {
       ${createTimeTemplate(startDate, endDate)}
       ${createPriceTemplate(basePrice)}
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
+      <button class="event__reset-btn" type="reset">${handleCloseClick ? 'Delete' : 'Close'}</button>
+      ${handleCloseClick ?
+      `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
-      </button>
+      </button>` : ''
+    }
     </header>
     <section class="event__details">
       <section class="event__section  event__section--offers">
@@ -149,15 +151,17 @@ const createEditFormTemplate = ({state}) => {
 export default class EditFormView extends AbstractStatefulView {
   #handleFormSubmit = null;
   #handleCloseClick = null;
+  #handleDeleteClick = null;
   #getDestinationById = null;
   #getDestinationByName = null;
   #datepickerFrom = null;
   #datepickerTo = null;
 
-  constructor({point = BLANK_POINT, destinations, getDestinationById, getDestinationByName, onFormSubmit, onCloseClick}) {
+  constructor({point = BLANK_POINT, destinations, getDestinationById, getDestinationByName, onFormSubmit, onCloseClick, onDeleteClick}) {
     super();
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
+    this.#handleDeleteClick = onDeleteClick;
     this.#getDestinationById = getDestinationById;
     this.#getDestinationByName = getDestinationByName;
     this._setState(EditFormView.parseDataToState({point, destinations, getDestinationById}));
@@ -167,10 +171,13 @@ export default class EditFormView extends AbstractStatefulView {
 
   _restoreHandlers() {
     this.element.addEventListener('submit', this.#formSubmitHandler);
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeButtonClickHandler);
+    if(this.#handleCloseClick) {
+      this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeButtonClickHandler);
+    }
     this.element.querySelector('.event__type-group').addEventListener('click', this.#pointTypeChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('input', this.#destinationChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('blur', this.#destinationInputBlurHandler);
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#pointDeleteClickHandler);
   }
 
   removeElement() {
@@ -193,7 +200,7 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   get template() {
-    return createEditFormTemplate({state: this._state});
+    return createEditFormTemplate({state: this._state, handleCloseClick: this.#handleCloseClick});
   }
 
   static parseDataToState = ({point, destinations, getDestinationById}) => {
@@ -239,6 +246,11 @@ export default class EditFormView extends AbstractStatefulView {
     this.#handleFormSubmit({data: EditFormView.parseStateToData({state: this._state})});
     this._restoreHandlers();
     this.#initDatepickers();
+  };
+
+  #pointDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this.#handleDeleteClick(EditFormView.parseStateToData({state: this._state}));
   };
 
   #closeButtonClickHandler = (evt) => {
