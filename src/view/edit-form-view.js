@@ -162,16 +162,7 @@ export default class EditFormView extends AbstractStatefulView {
   #datepickerTo = null;
   #offers = [];
 
-  constructor({
-                point = BLANK_POINT,
-                destinations,
-                offers,
-                getDestinationById,
-                getDestinationByName,
-                onFormSubmit,
-                onCloseClick,
-                onDeleteClick
-              }) {
+  constructor({point = BLANK_POINT, destinations, offers, getDestinationById, getDestinationByName, onFormSubmit, onCloseClick, onDeleteClick}) {
     super();
     this.#handleFormSubmit = onFormSubmit;
     this.#handleCloseClick = onCloseClick;
