@@ -13,7 +13,7 @@ export default class PointsModel extends Observable {
   async init(){
     try {
       const points = await this.#clientApiService.points;
-      this.#points = points.map((point) => this.#adaptPointToClient(point));
+      this.#points = points.map((point) => PointsModel.#adaptPointToClient(point));
     } catch (err){
       this.#points = [];
     }
@@ -42,7 +42,7 @@ export default class PointsModel extends Observable {
 
     try {
       const response = await this.#clientApiService.updatePoint(update);
-      const updatedPoint = this.#adaptPointToClient(response);
+      const updatedPoint = PointsModel.#adaptPointToClient(response);
       this.#points = [
         ...this.#points.slice(0, index),
         updatedPoint,

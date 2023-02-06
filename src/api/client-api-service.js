@@ -15,7 +15,7 @@ export default class ClientApiService extends ApiService {
     const response = await this._load({
       url: `/points/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(this.#adaptPointToServer(point)),
+      body: JSON.stringify(ClientApiService.#adaptPointToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
     return ApiService.parseResponse(response);
@@ -31,7 +31,7 @@ export default class ClientApiService extends ApiService {
       .then(ApiService.parseResponse);
   }
 
-  #adaptPointToServer(point) {
+  static #adaptPointToServer(point) {
     const adaptedPoint = {...point,
       base_price: point.basePrice,
       date_from: point.dateFrom,
