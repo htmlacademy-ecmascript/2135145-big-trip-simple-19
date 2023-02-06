@@ -38,7 +38,7 @@ const createEventTypeTemplate = (type) => (
 );
 
 const createEventTypesTemplate = (currentType, allOffers) => {
-  const offerTypes = allOffers.map(offer => offer.type);
+  const offerTypes = allOffers.map((offer) => offer.type);
   return (
     `
   <div class="event__type-wrapper">
@@ -107,19 +107,16 @@ const createOfferTemplate = (offer, isSelected) => (
   </div>
   `);
 
-const getAllOffersForType = (allOffers, type) => {
-  return allOffers.find(offer => offer.type === type).offers;
-};
+const getAllOffersForType = (allOffers, type) => allOffers.find(offer => offer.type === type).offers;
 
-const createOffersTemplate = (allOffers, type, selectedOffers) => {
-  return (
-    `
+const createOffersTemplate = (allOffers, type, selectedOffers) => (
+  `
   <div class="event__available-offers">
-    ${getAllOffersForType(allOffers, type).map((offer) => createOfferTemplate(offer, selectedOffers.map(item => item.title).includes(offer.title)))}
+    ${getAllOffersForType(allOffers, type).map((offer) => createOfferTemplate(offer, selectedOffers.map((item) => item.title).includes(offer.title)))}
   </div>
   `
-  );
-};
+);
+
 
 const createEditFormTemplate = ({state, allOffers, handleCloseClick}) => {
   const {type, dateFrom, destination, dateTo, basePrice, offers} = state.point;
@@ -295,11 +292,11 @@ export default class EditFormView extends AbstractStatefulView {
     evt.preventDefault();
     if(evt.target.classList.contains('event__offer-label')) {
       const offerId = Number(evt.target.control.value);
-      if(this._state.point.offers.map(offer => offer.id).includes(offerId)){
-        this.updateElement({...this._state, point: {...this._state.point, offers: this._state.point.offers.filter(offer => offer.id !== offerId)}});
+      if(this._state.point.offers.map((offer) => offer.id).includes(offerId)){
+        this.updateElement({...this._state, point: {...this._state.point, offers: this._state.point.offers.filter((offer) => offer.id !== offerId)}});
         return;
       }
-      const enrichedOffer = this.#offers.find(offer => offer.type === this._state.point.type).offers.find(item => item.id === offerId);
+      const enrichedOffer = this.#offers.find(offer => offer.type === this._state.point.type).offers.find((item) => item.id === offerId);
       this.updateElement({...this._state, point: {...this._state.point, offers: [...this._state.point.offers, enrichedOffer]}})}
   }
 }

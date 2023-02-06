@@ -30,7 +30,6 @@ export default class ClientApiService extends ApiService {
     return this._load({url: 'offers'})
       .then(ApiService.parseResponse);
   }
-  
   /* eslint-disable */
   static #adaptPointToServer(point) {
     const adaptedPoint = {...point,
