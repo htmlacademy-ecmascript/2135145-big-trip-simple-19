@@ -14,20 +14,23 @@ export default class PointPresenter {
   #pointItemViewComponent = null;
   #editFormViewComponent = null;
   #destinationsModel = null;
+  #offersModel = null;
   #point = null;
   #handleModeChange = null;
   #handleDataChange = null;
   #mode = Mode.DEFAULT;
 
-  constructor({ pointListContainer, destinationsModel, onModeChange, onDataChange}) {
+  constructor({ pointListContainer, destinationsModel, offersModel, onModeChange, onDataChange}) {
     this.#pointListContainer = pointListContainer;
     this.#destinationsModel = destinationsModel;
+    this.#offersModel = offersModel;
     this.#handleModeChange = onModeChange;
     this.#handleDataChange = onDataChange;
   }
 
   init = (point) => {
-    this.#point = point;
+    const allOffersForPoint = this.#offersModel.offers.find(offer => offer.type === point.type).offers;
+    this.#point = {...point, offers: allOffersForPoint.filter(offer => point.offers.includes(offer.id))};
     const prevPointItemViewComponent = this.#pointItemViewComponent;
     const prevEditFormViewComponent = this.#editFormViewComponent;
 
@@ -43,13 +46,14 @@ export default class PointPresenter {
     this.#editFormViewComponent = new EditFormView({
       point: this.#point,
       destinations: this.#destinationsModel.destinations,
+      offers: this.#offersModel.offers,
       getDestinationById: this.#destinationsModel.getDestinationById,
       getDestinationByName: this.#destinationsModel.getDestinationByName,
       onFormSubmit: ({data}) => {
         this.#handleFormSubmit(data);
       },
       onCloseClick: () => {
-        this.#replaceFormToPointView();
+        this.resetView();
         document.removeEventListener('keydown', this.#onEscKeyDown);
       },
       onDeleteClick: (data) => {
