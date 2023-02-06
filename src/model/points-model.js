@@ -1,4 +1,4 @@
-import {UpdateType} from "../const";
+import {UpdateType} from '../const.js';
 import Observable from '../framework/observable.js';
 
 export default class PointsModel extends Observable {
@@ -74,7 +74,7 @@ export default class PointsModel extends Observable {
       basePrice: point['base_price'],
       dateFrom: point['date_from'],
       dateTo: point['date_to'],
-      };
+    };
 
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];

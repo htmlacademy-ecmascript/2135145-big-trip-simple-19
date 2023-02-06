@@ -1,4 +1,4 @@
-import ApiService from "../framework/api-service";
+import ApiService from '../framework/api-service.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
@@ -30,14 +30,15 @@ export default class ClientApiService extends ApiService {
     return this._load({url: 'offers'})
       .then(ApiService.parseResponse);
   }
-
+  
+  /* eslint-disable */
   static #adaptPointToServer(point) {
     const adaptedPoint = {...point,
       base_price: point.basePrice,
       date_from: point.dateFrom,
       date_to: point.dateTo,
-      offers: point.offers.map(offer => offer.id),
-    }
+      offers: point.offers.map((offer) => offer.id),
+    };
 
     delete adaptedPoint.basePrice;
     delete adaptedPoint.dateFrom;

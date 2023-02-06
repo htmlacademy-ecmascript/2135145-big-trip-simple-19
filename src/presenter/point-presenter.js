@@ -29,8 +29,8 @@ export default class PointPresenter {
   }
 
   init = (point) => {
-    const allOffersForPoint = this.#offersModel.offers.find(offer => offer.type === point.type).offers;
-    this.#point = {...point, offers: allOffersForPoint.filter(offer => point.offers.includes(offer.id))};
+    const allOffersForPoint = this.#offersModel.offers.find((offer) => offer.type === point.type).offers;
+    this.#point = {...point, offers: allOffersForPoint.filter((offer) => point.offers.includes(offer.id))};
     const prevPointItemViewComponent = this.#pointItemViewComponent;
     const prevEditFormViewComponent = this.#editFormViewComponent;
 

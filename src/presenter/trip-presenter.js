@@ -2,7 +2,7 @@ import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import {filter} from '../utils/filter.js';
 import {sortByPrice, sortByDate} from '../utils/point.js';
-import LoadingView from "../view/loading-view";
+import LoadingView from '../view/loading-view.js';
 import NoPointView from '../view/no-point-view.js';
 import PointListView from '../view/point-list-view.js';
 import SortersView from '../view/sorters-view.js';
