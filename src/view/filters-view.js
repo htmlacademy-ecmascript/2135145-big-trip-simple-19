@@ -20,7 +20,7 @@ const createFilterTemplate = (filter, currentFilter) => {
     </div>
   `
   );
-}
+};
 
 const createFiltersTemplate = (filters, currentFilter) => (
   `<form class="trip-filters" action="#" method="get">

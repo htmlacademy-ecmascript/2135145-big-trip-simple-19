@@ -60,10 +60,10 @@ export default class FilterPresenter extends Observable {
     this.init();
   };
 
-  #handleFilterChange = (filter) => {
-    if(this.#filterModel.filter === filter) {
+  #handleFilterChange = (value) => {
+    if(this.#filterModel.filter === value) {
       return;
     }
-    this.#filterModel.setFilter(UpdateType.MAJOR, filter);
+    this.#filterModel.setFilter(UpdateType.MAJOR, value);
   };
 }

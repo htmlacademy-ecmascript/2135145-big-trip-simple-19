@@ -245,13 +245,13 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   #dateFromChangeHandler = ([date]) => {
-    const dateTo = dayjs(this._state.point.dateTo).diff(date) < 0 ? date : this._state.point.dateTo
+    const dateTo = dayjs(this._state.point.dateTo).diff(date) < 0 ? date : this._state.point.dateTo;
     this.updateElement(({...this._state, point: {...this._state.point, dateFrom: date, dateTo}}));
     this.#initDatepickers();
   };
 
   #dateToChangeHandler = ([date]) => {
-    const dateFrom = dayjs(this._state.point.dateFrom).diff(date) > 0 ? date : this._state.point.dateFrom
+    const dateFrom = dayjs(this._state.point.dateFrom).diff(date) > 0 ? date : this._state.point.dateFrom;
     this.updateElement(({...this._state, point: {...this._state.point, dateTo: date, dateFrom}}));
     this.#initDatepickers();
   };
