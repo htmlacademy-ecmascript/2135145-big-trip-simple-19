@@ -25,7 +25,7 @@ export default class ClientApiService extends ApiService {
 
   async addPoint(point) {
     const response = await this._load({
-      url: `/points`,
+      url: '/points',
       method: Method.POST,
       body: JSON.stringify(ClientApiService.#adaptPointToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),

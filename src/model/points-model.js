@@ -66,7 +66,7 @@ export default class PointsModel extends Observable {
       throw new Error('Provided point does not exist!');
     }
     try {
-      await this.#clientApiService.deletePoint(update)
+      await this.#clientApiService.deletePoint(update);
       this.#points = [
         ...this.#points.slice(0, index),
         ...this.#points.slice(index + 1),

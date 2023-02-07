@@ -53,7 +53,7 @@ const createDestinationsTemplate = (type, currentDestination, destinations, isDi
     <label class="event__label  event__type-output" for="event-destination-1">
       ${capitalizeFirstLetter(type)}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" ${isDisabled ? 'disabled' : ''} value=${currentDestination?.name || ""}>
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" ${isDisabled ? 'disabled' : ''} value=${currentDestination?.name || ''}>
     <datalist id="destination-list-1">
       ${destinations.map((destination) => createDestinationOptionTemplate(destination)).join('')}
     </datalist>
@@ -112,6 +112,7 @@ const createEditFormTemplate = ({state, allOffers, handleCloseClick}) => {
   const {type, dateFrom, destination, dateTo, basePrice, offers} = point;
   const startDate = getDateWithTimeWithSlash(dateFrom);
   const endDate = getDateWithTimeWithSlash(dateTo);
+  const buttonDeleteText = isDeleting ? 'Deleting...' : 'Delete';
   return (
     `
    <form class="event event--edit">
@@ -121,7 +122,7 @@ const createEditFormTemplate = ({state, allOffers, handleCloseClick}) => {
       ${createTimeTemplate(startDate, endDate, isDisabled)}
       ${createPriceTemplate(basePrice, isDisabled)}
       <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${handleCloseClick ? isDeleting ?'Deleting...' : 'Delete' : 'Close'}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${handleCloseClick ? buttonDeleteText : 'Close'}</button>
       ${handleCloseClick ?
       `<button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
@@ -302,7 +303,7 @@ export default class EditFormView extends AbstractStatefulView {
         point: {...this._state.point, basePrice: price}
       });
     }
-  }
+  };
 
   #offerChangeHandler = (evt) => {
     evt.preventDefault();

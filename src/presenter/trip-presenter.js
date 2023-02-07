@@ -1,6 +1,6 @@
 import {FilterType, SortType, UpdateType, UserAction} from '../const.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
-import UiBlocker from "../framework/ui-blocker/ui-blocker";
+import UiBlocker from '../framework/ui-blocker/ui-blocker';
 import {filter} from '../utils/filter.js';
 import {sortByPrice, sortByDate} from '../utils/point.js';
 import LoadingView from '../view/loading-view.js';
