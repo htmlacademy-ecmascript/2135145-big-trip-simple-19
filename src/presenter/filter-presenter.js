@@ -2,6 +2,8 @@ import {FilterType, UpdateType} from '../const.js';
 import Observable from '../framework/observable.js';
 import {remove, render, replace} from '../framework/render.js';
 import FiltersView from '../view/filters-view.js';
+import {filter} from '../utils/filter.js';
+
 
 export default class FilterPresenter extends Observable {
   #filterContainer = null;
@@ -21,7 +23,17 @@ export default class FilterPresenter extends Observable {
   }
 
   get filters() {
-    return Object.values(FilterType);
+    const points = this.#pointsModel.points;
+    return [
+      {
+        name: FilterType.EVERYTHING,
+        isEnabled: points?.length > 0,
+      },
+      {
+        name: FilterType.FUTURE,
+        isEnabled: filter[FilterType.FUTURE](points)?.length > 0,
+      }
+    ];
   }
 
   init = () => {
@@ -48,10 +60,10 @@ export default class FilterPresenter extends Observable {
     this.init();
   };
 
-  #handleFilterChange = (filter) => {
-    if(this.#filterModel.filter === filter) {
+  #handleFilterChange = (value) => {
+    if(this.#filterModel.filter === value) {
       return;
     }
-    this.#filterModel.setFilter(UpdateType.MAJOR, filter);
+    this.#filterModel.setFilter(UpdateType.MAJOR, value);
   };
 }

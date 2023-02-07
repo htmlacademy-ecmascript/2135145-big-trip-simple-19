@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import {getDateWithTimeWithSlash} from '../utils/time-formatter.js';
@@ -244,12 +245,14 @@ export default class EditFormView extends AbstractStatefulView {
   };
 
   #dateFromChangeHandler = ([date]) => {
-    this.updateElement(({...this._state, point: {...this._state.point, dateFrom: date}}));
+    const dateTo = dayjs(this._state.point.dateTo).diff(date) < 0 ? date : this._state.point.dateTo;
+    this.updateElement(({...this._state, point: {...this._state.point, dateFrom: date, dateTo}}));
     this.#initDatepickers();
   };
 
   #dateToChangeHandler = ([date]) => {
-    this.updateElement(({...this._state, point: {...this._state.point, dateTo: date}}));
+    const dateFrom = dayjs(this._state.point.dateFrom).diff(date) > 0 ? date : this._state.point.dateFrom;
+    this.updateElement(({...this._state, point: {...this._state.point, dateTo: date, dateFrom}}));
     this.#initDatepickers();
   };
 
