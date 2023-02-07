@@ -2,6 +2,8 @@ import ApiService from '../framework/api-service.js';
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
+  POST: 'POST',
+  DELETE: 'DELETE',
 };
 
 export default class ClientApiService extends ApiService {
@@ -19,6 +21,24 @@ export default class ClientApiService extends ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
     return ApiService.parseResponse(response);
+  }
+
+  async addPoint(point) {
+    const response = await this._load({
+      url: `/points`,
+      method: Method.POST,
+      body: JSON.stringify(ClientApiService.#adaptPointToServer(point)),
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+    return ApiService.parseResponse(response);
+  }
+
+  async deletePoint(point) {
+    const response = await this._load({
+      url: `points/${point.id}`,
+      method: Method.DELETE,
+    });
+    return response;
   }
 
   get destinations() {

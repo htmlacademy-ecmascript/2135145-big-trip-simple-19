@@ -1,4 +1,4 @@
-import {nanoid} from 'nanoid';
+import dayjs from 'dayjs';
 import {UpdateType, UserAction} from '../const.js';
 import {remove, render, RenderPosition} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
@@ -11,9 +11,10 @@ export default class NewPointPresenter {
 
   #pointEditComponent = null;
 
-  constructor({pointListContainer, destinationsModel, handleDataChange, handleDestroy}) {
+  constructor({pointListContainer, destinationsModel, offersModel, handleDataChange, handleDestroy}) {
     this.#pointListContainer = pointListContainer;
     this.#destinationsModel = destinationsModel;
+    this.offersModel = offersModel;
     this.#handleDataChange = handleDataChange;
     this.#handleDestroy = handleDestroy;
   }
@@ -23,9 +24,19 @@ export default class NewPointPresenter {
       return;
     }
 
+    const BLANK_POINT = {
+      'basePrice': 80,
+      'dateFrom': dayjs().toDate(),
+      'dateTo': dayjs().toDate(),
+      'destination': this.#destinationsModel.destinations[0].id,
+      'offers': [],
+      'type': 'taxi',
+    };
+
     this.#pointEditComponent = new EditFormView({
-      point: undefined,
+      point: BLANK_POINT,
       destinations: this.#destinationsModel.destinations,
+      offers: this.offersModel.offers,
       getDestinationById: this.#destinationsModel.getDestinationById,
       getDestinationByName: this.#destinationsModel.getDestinationByName,
       onFormSubmit: this.#handleFormSubmit,
@@ -33,7 +44,7 @@ export default class NewPointPresenter {
       onCloseClick: null,
     });
 
-    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.AFTERBEGIN);
+    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.BEFOREBEGIN);
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 
@@ -49,13 +60,31 @@ export default class NewPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#pointEditComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = ({data}) => {
     this.#handleDataChange(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      {...data, id: nanoid()},
+      data,
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {
