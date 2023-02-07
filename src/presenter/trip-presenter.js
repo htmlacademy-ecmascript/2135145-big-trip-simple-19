@@ -34,6 +34,7 @@ export default class TripPresenter {
     lowerLimit: TimeLimit.LOWER_LIMIT,
     upperLimit: TimeLimit.UPPER_LIMIT
   });
+
   #handleNewPointDestroy = null;
 
   constructor({contentContainer, pointsModel, destinationsModel, offersModel, filterModel, onNewPointDestroy}) {
@@ -49,10 +50,10 @@ export default class TripPresenter {
   }
 
   initNewPointPresenter() {
-    const pointsLength =this.points?.length;
+    const pointsLength = this.points?.length;
     this.#newPointPresenter = new NewPointPresenter({
       pointListContainer: pointsLength > 0 ? this.#pointListView.element : this.#contentContainer,
-      renderPosition: pointsLength > 0  ? RenderPosition.BEFOREBEGIN : RenderPosition.AFTERBEGIN,
+      renderPosition: pointsLength > 0 ? RenderPosition.BEFOREBEGIN : RenderPosition.AFTERBEGIN,
       destinationsModel: this.#destinationsModel,
       offersModel: this.#offersModel,
       handleDataChange: this.#handleViewAction,

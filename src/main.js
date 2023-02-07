@@ -64,11 +64,11 @@ Promise.all([
   destinationsModel.init(),
   offersModel.init(),
 ]).then(() => {
-    pointsModel.init()
-      .catch((err) => {
-        render(errorViewComponent, tripContainer);
-      }).finally(() => render(newEventButtonComponent, mainContainer))
-}).catch((err) => {
+  pointsModel.init()
+    .catch(() => {
+      render(errorViewComponent, tripContainer);
+    }).finally(() => render(newEventButtonComponent, mainContainer));
+}).catch(() => {
   render(errorViewComponent, tripContainer);
 });
 
