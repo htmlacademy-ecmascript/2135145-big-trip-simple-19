@@ -1,21 +1,26 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 
-const createFilterTemplate = (filter, currentFilter) => (
-  `
+
+const createFilterTemplate = (filter, currentFilter) => {
+  const {name, isEnabled} = filter;
+  return (
+    `
   <div class="trip-filters__filter">
       <input
-      id="filter-${filter}"
+      id="filter-${name}"
       class="trip-filters__filter-input  visually-hidden"
       type="radio"
       name="trip-filter"
-      value="${filter}"
-      ${filter === currentFilter ? 'checked' : ''}
+      value="${name}"
+      ${filter.name === currentFilter ? 'checked' : ''}
+      ${isEnabled ? '' : 'disabled'}
       >
-        <label class="trip-filters__filter-label" for="filter-${filter}" data-filter-type="${filter}">${capitalizeFirstLetter(filter)}</label>
+        <label class="trip-filters__filter-label" for="filter-${name}" data-filter-type="${name}">${capitalizeFirstLetter(name)}</label>
     </div>
   `
-);
+  );
+}
 
 const createFiltersTemplate = (filters, currentFilter) => (
   `<form class="trip-filters" action="#" method="get">
@@ -42,10 +47,10 @@ export default class FiltersView extends AbstractView {
   }
 
   #filterChangeHandler = (evt) => {
-    if(!evt.target.classList.contains('trip-filters__filter-label')) {
+    evt.preventDefault();
+    if(!evt.target.classList.contains('trip-filters__filter-label') || evt.target.control.disabled) {
       return;
     }
-    evt.preventDefault();
     this.#handleFilterChange(evt.target.dataset.filterType);
   };
 }

@@ -9,7 +9,7 @@ const sortByPrice = (pointA, pointB) => {
   return 0;
 };
 
-const sortByDate = (pointA, pointB) => dayjs(pointB.dateFrom).diff(pointA.dateFrom);
+const sortByDate = (pointA, pointB) => dayjs(pointA.dateFrom).diff(pointB.dateFrom);
 
 const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
 
