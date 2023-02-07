@@ -40,10 +40,10 @@ export default class SortersView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
+    evt.preventDefault();
     if(!evt.target.classList.contains('trip-sort__btn')) {
       return;
     }
-    evt.preventDefault();
     this.#handleSortChange(evt.target.dataset.sortType);
   };
 }

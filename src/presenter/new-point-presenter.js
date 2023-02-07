@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import {UpdateType, UserAction} from '../const.js';
-import {remove, render, RenderPosition} from '../framework/render.js';
+import {remove, render} from '../framework/render.js';
 import EditFormView from '../view/edit-form-view.js';
 
 export default class NewPointPresenter {
@@ -10,13 +10,15 @@ export default class NewPointPresenter {
   #destinationsModel = null;
 
   #pointEditComponent = null;
+  #renderPosition = null;
 
-  constructor({pointListContainer, destinationsModel, offersModel, handleDataChange, handleDestroy}) {
+  constructor({pointListContainer, destinationsModel, offersModel, handleDataChange, handleDestroy, renderPosition}) {
     this.#pointListContainer = pointListContainer;
     this.#destinationsModel = destinationsModel;
     this.offersModel = offersModel;
     this.#handleDataChange = handleDataChange;
     this.#handleDestroy = handleDestroy;
+    this.#renderPosition = renderPosition;
   }
 
   init = () => {
@@ -44,7 +46,7 @@ export default class NewPointPresenter {
       onCloseClick: null,
     });
 
-    render(this.#pointEditComponent, this.#pointListContainer, RenderPosition.BEFOREBEGIN);
+    render(this.#pointEditComponent, this.#pointListContainer, this.#renderPosition);
     document.addEventListener('keydown', this.#escKeyDownHandler);
   };
 

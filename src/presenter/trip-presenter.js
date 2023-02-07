@@ -35,29 +35,49 @@ export default class TripPresenter {
     upperLimit: TimeLimit.UPPER_LIMIT
   });
 
+  #handleNewPointDestroy = null;
+
   constructor({contentContainer, pointsModel, destinationsModel, offersModel, filterModel, onNewPointDestroy}) {
     this.#contentContainer = contentContainer;
     this.#pointsModel = pointsModel;
     this.#destinationsModel = destinationsModel;
     this.#filterModel = filterModel;
     this.#offersModel = offersModel;
-
-    this.#newPointPresenter = new NewPointPresenter({
-      pointListContainer: this.#pointListView.element,
-      destinationsModel: this.#destinationsModel,
-      offersModel: this.#offersModel,
-      handleDataChange: this.#handleViewAction,
-      handleDestroy: onNewPointDestroy,
-    });
+    this.#handleNewPointDestroy = onNewPointDestroy;
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
+  }
+
+  initNewPointPresenter() {
+    const pointsLength = this.points?.length;
+    this.#newPointPresenter = new NewPointPresenter({
+      pointListContainer: pointsLength > 0 ? this.#pointListView.element : this.#contentContainer,
+      renderPosition: pointsLength > 0 ? RenderPosition.BEFOREBEGIN : RenderPosition.AFTERBEGIN,
+      destinationsModel: this.#destinationsModel,
+      offersModel: this.#offersModel,
+      handleDataChange: this.#handleViewAction,
+      handleDestroy: () => {
+        this.#handleNewPointDestroy();
+        if(pointsLength === 0) {
+          this.#renderNoPointView();
+          this.#newPointPresenter = null;
+        }
+      },
+    });
   }
 
   createPoint() {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#newPointPresenter.init();
+  }
+
+  clearNoPointView() {
+    if(this.#noPointsComponent !== null) {
+      remove(this.#noPointsComponent);
+      this.#noPointsComponent = null;
+    }
   }
 
   get points() {
@@ -100,7 +120,7 @@ export default class TripPresenter {
   };
 
   #handleSortChange = (sortType) => {
-    if(this.#currentSortType === sortType) {
+    if ((sortType !== SortType.PRICE && sortType !== SortType.DAY) || this.#currentSortType === sortType) {
       return;
     }
     this.#currentSortType = sortType === SortType.PRICE ? sortType : SortType.DAY;
@@ -201,10 +221,10 @@ export default class TripPresenter {
       this.#renderLoading();
       return;
     }
-    this.#renderSort();
     if (this.points === null || this.points.length === 0) {
       this.#renderNoPointView();
     } else {
+      this.#renderSort();
       this.#renderPointList();
     }
   };
