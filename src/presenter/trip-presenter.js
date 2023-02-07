@@ -61,7 +61,7 @@ export default class TripPresenter {
         this.#handleNewPointDestroy();
         if(pointsLength === 0) {
           this.#renderNoPointView();
-          this.#newPointPresenter = null;
+          this.#newPointPresenter.destroy();
         }
       },
     });
@@ -95,7 +95,9 @@ export default class TripPresenter {
   }
 
   #handleModeChange = () => {
-    this.#newPointPresenter.destroy();
+    if(this.#newPointPresenter !== null) {
+      this.#newPointPresenter.destroy();
+    }
     this.#pointPresenters.forEach((p) => p.resetView());
   };
 
@@ -202,7 +204,9 @@ export default class TripPresenter {
   };
 
   #clearBoard = ({resetSortType = false}) => {
-    this.#newPointPresenter.destroy();
+    if(this.#newPointPresenter !== null) {
+      this.#newPointPresenter.destroy();
+    }
     this.#clearPointList();
 
     remove(this.#sortComponent);
