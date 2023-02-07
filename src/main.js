@@ -6,7 +6,7 @@ import OffersModel from './model/offers-model.js';
 import PointsModel from './model/points-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import TripPresenter from './presenter/trip-presenter.js';
-import ErrorView from './view/error-view';
+import ErrorView from './view/error-view.js';
 import NewEventButtonView from './view/new-event-button-view.js';
 
 const AUTHORIZATION = 'Basic hj4hj43j234hbj234';
