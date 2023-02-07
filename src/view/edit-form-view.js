@@ -19,9 +19,9 @@ const createDestinationTemplate = ({name, description, pictures}) => (
    </section>`
 );
 
-const createEventTypeTemplate = (type, isDisabled) => (
+const createEventTypeTemplate = (type, isDisabled, isSelected) => (
   `<div class="event__type-item">
-      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type} ${isDisabled ? 'disabled' : ''}>
+      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type} ${isDisabled ? 'disabled' : ''} ${isSelected ? 'checked' : ''}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeFirstLetter(type)}</label>
     </div>
   `
@@ -40,7 +40,7 @@ const createEventTypesTemplate = (currentType, allOffers, isDisabled) => {
     <div class="event__type-list">
       <fieldset class="event__type-group">
         <legend class="visually-hidden">Event type</legend>
-          ${offerTypes.map((type) => createEventTypeTemplate(type, isDisabled)).join('')}
+          ${offerTypes.map((type) => createEventTypeTemplate(type, isDisabled, type === currentType)).join('')}
       </fieldset>
     </div>
   </div>`
@@ -103,7 +103,7 @@ const createOffersTemplate = (allOffers, type, selectedOffers, isDisabled) => (
   `
   <h3 class="event__section-title  event__section-title--offers">Offers</h3>
   <div class="event__available-offers">
-    ${getAllOffersForType(allOffers, type).map((offer) => createOfferTemplate(offer, selectedOffers.map((item) => item.title).includes(offer.title), isDisabled))}
+    ${getAllOffersForType(allOffers, type).map((offer) => createOfferTemplate(offer, selectedOffers.map((item) => item.title).includes(offer.title), isDisabled)).join('')}
   </div>
   `
 );

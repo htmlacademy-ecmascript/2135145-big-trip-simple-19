@@ -11,6 +11,7 @@ export default class OffersModel {
       this.#offers = await this.#clientApiService.offers;
     } catch (err){
       this.#offers = [];
+      throw new Error('Can not load offers');
     }
   }
 

@@ -6,6 +6,7 @@ import OffersModel from './model/offers-model.js';
 import PointsModel from './model/points-model.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import TripPresenter from './presenter/trip-presenter.js';
+import ErrorView from './view/error-view';
 import NewEventButtonView from './view/new-event-button-view.js';
 
 const AUTHORIZATION = 'Basic hj4hj43j234hbj234';
@@ -38,8 +39,12 @@ const newEventButtonComponent = new NewEventButtonView({
   onClick: handleNewEventButtonClick,
 });
 
+const errorViewComponent = new ErrorView();
+
 function handleNewEventButtonClick() {
+  tripPresenter.initNewPointPresenter();
   tripPresenter.createPoint();
+  tripPresenter.clearNoPointView();
   newEventButtonComponent.element.disabled = true;
 }
 
@@ -58,9 +63,13 @@ filterPresenter.init();
 Promise.all([
   destinationsModel.init(),
   offersModel.init(),
-]).finally(() => {
-  pointsModel.init();
-  render(newEventButtonComponent, mainContainer);
+]).then(() => {
+    pointsModel.init()
+      .catch((err) => {
+        render(errorViewComponent, tripContainer);
+      }).finally(() => render(newEventButtonComponent, mainContainer))
+}).catch((err) => {
+  render(errorViewComponent, tripContainer);
 });
 
 
