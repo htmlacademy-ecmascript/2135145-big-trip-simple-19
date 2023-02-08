@@ -1,7 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {capitalizeFirstLetter} from '../utils/common.js';
 
-
 const createFilterTemplate = (filter, currentFilter) => {
   const {name, isEnabled} = filter;
   return (
