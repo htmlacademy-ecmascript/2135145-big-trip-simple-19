@@ -30,7 +30,7 @@ const createEventTypeTemplate = (type, isDisabled, isSelected) => {
     </div>
   `
   );
-}
+};
 
 const createEventTypesTemplate = (currentType, allOffers, isDisabled) => {
   const offerTypes = allOffers.map((offer) => offer.type);
@@ -103,7 +103,7 @@ const createOfferTemplate = (offer, isSelected, isDisabled) => {
     </label>
   </div>
   `);
-}
+};
 
 const getAllOffersForType = (allOffers, type) => allOffers.find((offer) => offer.type === type).offers;
 

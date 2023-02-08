@@ -68,9 +68,7 @@ Promise.all([
     .catch(() => {
       render(errorViewComponent, tripContainer);
     }).finally(() => render(newEventButtonComponent, mainContainer));
-}).catch((err) => {
-  debugger;
-  console.log(err);
+}).catch(() => {
   render(errorViewComponent, tripContainer);
 });
 
