@@ -1,16 +1,17 @@
 import dayjs from 'dayjs';
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view';
 import {capitalizeFirstLetter} from '../utils/common.js';
 import {getDateWithTimeWithSlash} from '../utils/time-formatter.js';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const createPictureTemplate = ({src, description}) => (`<img class="event__photo" src=${src} alt=${description}>`);
+const createPictureTemplate = ({src, description}) => (`<img class="event__photo" src=${he.encode(src)} alt=${he.encode(description)}>`);
 
 const createDestinationTemplate = ({name, description, pictures}) => (
   `<section class="event__section  event__section--destination">
-    <h3 class="event__section-title  event__section-title--destination">${name}</h3>
-    ${description ? (`<p class="event__destination-description">${description}</p>`) : ''}
+    <h3 class="event__section-title  event__section-title--destination">${he.encode(name)}</h3>
+    ${description ? (`<p class="event__destination-description">${he.encode(description)}</p>`) : ''}
     <div class="event__photos-container">
         <div class="event__photos-tape">
             ${pictures?.length > 0 ? pictures.map((picture) => createPictureTemplate(picture)).join('') : ''}
@@ -19,13 +20,17 @@ const createDestinationTemplate = ({name, description, pictures}) => (
    </section>`
 );
 
-const createEventTypeTemplate = (type, isDisabled, isSelected) => (
-  `<div class="event__type-item">
-      <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${type} ${isDisabled ? 'disabled' : ''} ${isSelected ? 'checked' : ''}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${capitalizeFirstLetter(type)}</label>
+const createEventTypeTemplate = (type, isDisabled, isSelected) => {
+  const encodedType = he.encode(type);
+  return (
+
+    `<div class="event__type-item">
+      <input id="event-type-${encodedType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value=${encodedType} ${isDisabled ? 'disabled' : ''} ${isSelected ? 'checked' : ''}>
+      <label class="event__type-label  event__type-label--${encodedType}" for="event-type-${encodedType}-1">${capitalizeFirstLetter(encodedType)}</label>
     </div>
   `
-);
+  );
+}
 
 const createEventTypesTemplate = (currentType, allOffers, isDisabled) => {
   const offerTypes = allOffers.map((offer) => offer.type);
@@ -34,7 +39,7 @@ const createEventTypesTemplate = (currentType, allOffers, isDisabled) => {
   <div class="event__type-wrapper">
     <label class="event__type  event__type-btn" for="event-type-toggle-1">
       <span class="visually-hidden">Choose event type</span>
-      <img class="event__type-icon" width="17" height="17" src="img/icons/${currentType}.png" alt="Event type icon">
+      <img class="event__type-icon" width="17" height="17" src="img/icons/${he.encode(currentType)}.png" alt="Event type icon">
     </label>
     <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
     <div class="event__type-list">
@@ -47,14 +52,14 @@ const createEventTypesTemplate = (currentType, allOffers, isDisabled) => {
   );
 };
 
-const createDestinationOptionTemplate = (destination) => `<option value="${destination.name}">`;
+const createDestinationOptionTemplate = (destination) => `<option value="${he.encode(destination.name)}">`;
 
 const createDestinationsTemplate = (type, currentDestination, destinations, isDisabled) => (
   `<div class="event__field-group  event__field-group--destination">
     <label class="event__label  event__type-output" for="event-destination-1">
-      ${capitalizeFirstLetter(type)}
+      ${capitalizeFirstLetter(he.encode(type))}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" ${isDisabled ? 'disabled' : ''} value=${currentDestination?.name || ''}>
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" list="destination-list-1" ${isDisabled ? 'disabled' : ''} value=${he.encode(currentDestination?.name || '')}>
     <datalist id="destination-list-1">
       ${destinations.map((destination) => createDestinationOptionTemplate(destination)).join('')}
     </datalist>
@@ -65,10 +70,10 @@ const createTimeTemplate = (startDate, endDate, isDisabled) => (
   `
    <div class="event__field-group  event__field-group--time">
      <label class="visually-hidden" for="event-start-time-1">From</label>
-     <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}" ${isDisabled ? 'disabled' : ''}>
+     <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${he.encode(startDate)}" ${isDisabled ? 'disabled' : ''}>
       &mdash;
      <label class="visually-hidden" for="event-end-time-1">To</label>
-     <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}" ${isDisabled ? 'disabled' : ''}>
+     <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${he.encode(endDate)}" ${isDisabled ? 'disabled' : ''}>
    </div>
   `
 );
@@ -80,22 +85,25 @@ const createPriceTemplate = (price, isDisabled) => (
       <span class="visually-hidden">Price</span>
       &euro;
     </label>
-    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
+    <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${he.encode(price.toString())}" ${isDisabled ? 'disabled' : ''}>
   </div>
   `
 );
 
-const createOfferTemplate = (offer, isSelected, isDisabled) => (
-  `
+const createOfferTemplate = (offer, isSelected, isDisabled) => {
+  const encodedOfferId = he.encode(offer.id.toString());
+  return (
+    `
   <div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" value=${offer.id} id="event-${offer.id}" type="checkbox" name="event-${offer.id}" ${isSelected ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
-    <label class="event__offer-label" for="event-${offer.id}">
-      <span class="event__offer-title">${offer.title}</span>
+    <input class="event__offer-checkbox  visually-hidden" value=${encodedOfferId} id="event-${encodedOfferId}" type="checkbox" name="event-${encodedOfferId}" ${isSelected ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
+    <label class="event__offer-label" for="event-${encodedOfferId}">
+      <span class="event__offer-title">${he.encode(offer.title)}</span>
       &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
+      <span class="event__offer-price">${he.encode(offer.price.toString())}</span>
     </label>
   </div>
   `);
+}
 
 const getAllOffersForType = (allOffers, type) => allOffers.find((offer) => offer.type === type).offers;
 
@@ -313,17 +321,19 @@ export default class EditFormView extends AbstractStatefulView {
     if (evt.target.classList.contains('event__offer-label')) {
       const offerId = Number(evt.target.control.value);
       if (this._state.point.offers.map((offer) => offer.id).includes(offerId)) {
-        this.updateElement({
+        this._setState({
           ...this._state,
           point: {...this._state.point, offers: this._state.point.offers.filter((offer) => offer.id !== offerId)}
         });
+        evt.target.control.checked = false;
         return;
       }
       const enrichedOffer = this.#offers.find((offer) => offer.type === this._state.point.type).offers.find((item) => item.id === offerId);
-      this.updateElement({
+      this._setState({
         ...this._state,
         point: {...this._state.point, offers: [...this._state.point.offers, enrichedOffer]}
       });
+      evt.target.control.checked = true;
     }
   };
 }

@@ -40,7 +40,7 @@ export default class PointPresenter {
       destination: this.#destinationsModel.getDestinationById(this.#point.destination),
       onEditClick: () => {
         this.#replacePointViewToForm();
-        document.addEventListener('keydown', this.#onEscKeyDown);
+        document.addEventListener('keydown', this.#handleEscKeyDown);
       }
     });
 
@@ -55,11 +55,11 @@ export default class PointPresenter {
       },
       onCloseClick: () => {
         this.resetView();
-        document.removeEventListener('keydown', this.#onEscKeyDown);
+        document.removeEventListener('keydown', this.#handleEscKeyDown);
       },
       onDeleteClick: (data) => {
         this.#handleDeleteClick(data);
-        document.removeEventListener('keydown', this.#onEscKeyDown);
+        document.removeEventListener('keydown', this.#handleEscKeyDown);
       }
     });
 
@@ -90,7 +90,7 @@ export default class PointPresenter {
       isPatchUpdate ? UpdateType.PATCH : UpdateType.MINOR,
       point
     );
-    document.removeEventListener('keydown', this.#onEscKeyDown);
+    document.removeEventListener('keydown', this.#handleEscKeyDown);
   };
 
   #handleDeleteClick = (point) => {
@@ -160,12 +160,12 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
-  #onEscKeyDown = (evt) => {
+  #handleEscKeyDown = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
       this.#editFormViewComponent.reset(this.#point);
       this.#replaceFormToPointView();
-      document.removeEventListener('keydown', this.#onEscKeyDown);
+      document.removeEventListener('keydown', this.#handleEscKeyDown);
     }
   };
 }
